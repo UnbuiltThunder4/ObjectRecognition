@@ -13,33 +13,31 @@ struct Card: View {
     var certainty: String
     
     var body: some View {
-        VStack (alignment: .leading) {
-            HStack {
-                Text("Guess:     ")
-                    .font(.system(size: 14))
-                    .frame(width: 80)
-                    .padding()
-                Text(label)
-                    .font(.system(size: 24))
-                    .foregroundColor(Color.blue)
-                    .font(.title)
-                    .padding()
+            VStack (alignment: .leading) {
+                HStack {
+                    Text("Guess:     ")
+                        //.font(.system(size: 14))
+                        .frame(width: 80)
+                        .padding()
+                    Text(label)
+                        //.font(.system(size: 24))
+                        .font(.title)
+                        .padding()
+                }
+                .accessibilityElement(children: .combine)
+                Divider()
+                HStack {
+                    Text("Certainty:")
+                        //.font(.system(size: 14))
+                        .frame(width: 80)
+                        .padding()
+                    Text("\(certainty)")
+                        //.font(.system(size: 24))
+                        .font(.title)
+                        .padding()
+                }
+                .accessibilityElement(children: .combine)
             }
-            .accessibilityElement(children: .combine)
-            Divider()
-            HStack {
-                Text("Certainty:")
-                    .font(.system(size: 14))
-                    .frame(width: 80)
-                    .padding()
-                Text("\(certainty)")
-                    .font(.system(size: 24))
-                    .foregroundColor(Color.blue)
-                    .font(.title)
-                    .padding()
-            }
-            .accessibilityElement(children: .combine)
-        }
-        .background(.thinMaterial)
+            .background(.thinMaterial)
     }
 }

@@ -63,21 +63,26 @@ struct CameraView: View {
     }
     
     var body: some View {
-        NavigationView {
+        GeometryReader { geometry in
+            NavigationView {
             ZStack {
                 Image(uiImage: UIImage(named: "glassBG")!)
+                    .offset(x: geometry.size.width * -0.15, y: geometry.size.height * -0.1)
+                    //.offset(x: -60, y: -100)
                     .opacity(0.1)
-                    .offset(x: -60, y: -100)
                     .accessibilityHidden(true)
                 VStack {
                     if (image != nil) {
                         Image(uiImage: image!)
                             .resizable()
                             .cornerRadius(10)
+
                             .shadow(color: .black, radius: 5, x: 5, y: 5)
                             .aspectRatio(contentMode: ContentMode.fit)
-                            .frame(maxWidth: 380, maxHeight: 380)
-                            .offset(y: -80)
+                            .frame(maxWidth: geometry.size.width * 0.85, maxHeight: geometry.size.height * 0.42)
+                            //.offset(y: geometry.size.height * -0.08)
+                            //.frame(maxWidth: 380, maxHeight: 380)
+                            //.offset(y: -80)
                             .accessibilityHidden(true)
                             .onAppear {
                                 self.firstclassification = false
@@ -86,14 +91,20 @@ struct CameraView: View {
                     else {
                         Image(uiImage: UIImage(named: "glass")!)
                             .resizable()
-                            .frame(width: 330, height: 440)
-                            .offset(x: 0, y: -25)
+                            .aspectRatio(contentMode: ContentMode.fit)
+                            .frame(maxWidth: geometry.size.width * 0.85, maxHeight: geometry.size.height * 0.55)
+                            //.frame(width: 330, height: 440)
+                            //.offset(x: 0, y: -25)
                             .accessibilityHidden(true)
                         Text("Take the photo of one single object and see if it matches the app's guess")
-                            .padding()
-                            .font(.system(size: 30, weight: .light))
-                            .frame(width: 400, height: 140)
-                            .offset(y: -40)
+                            //.padding()
+                            //.font(.system(size: 30, weight: .light))
+                            .font(.title)
+                            .fontWeight(.light)
+                            .frame(maxWidth: geometry.size.width * 0.85, maxHeight: geometry.size.height * 0.2)
+                            //.offset(y: geometry.size.height * -0.05)
+                            //.frame(width: 400, height: 140)
+                            //.offset(y: -40)
                             .accessibilityAddTraits(.isStaticText)
                     }
                     if (self.firstclassification) {
@@ -102,10 +113,12 @@ struct CameraView: View {
                             impact.impactOccurred()
                         }) {
                             Text("Get Started")
-                                .font(.system(size: 18))
-                                .frame(width: 300)
+                                //.font(.system(size: 18))
+                                .frame(maxWidth: geometry.size.width * 0.8, maxHeight: geometry.size.height * 0.02)
+                                //.frame(width: 300)
                         }
-                        .frame(width: 300)
+                        .frame(maxWidth: geometry.size.width * 0.8, maxHeight: geometry.size.height * 0.02)
+                        //.frame(width: 300)
                         .padding()
                         .foregroundColor(Color.white)
                         .background(Color.indigo)
@@ -131,27 +144,31 @@ struct CameraView: View {
                         }
                     }
                     else {
-                        ZStack {
                         Card(label: classificationLabel, certainty: classificationLabelProb)
                             .cornerRadius(10)
-                            .frame(width: UIScreen.main.bounds.width - 32)
+                            .frame(maxWidth: geometry.size.width * 0.85, maxHeight: geometry.size.height * 0.28)
                             .padding()
-                            .offset(y: -50)
+                            //.offset(y: geometry.size.height * -0.05)
+                            //.frame(width: UIScreen.main.bounds.width - 32)
+                            //.offset(y: -50)
                         
                         Button(action: {
                             self.showSheet = true
                             impact.impactOccurred()
                         }) {
                             Text("Try Again")
-                                .font(.system(size: 18))
-                                .frame(width: 300)
+                                //.font(.system(size: 18))
+                                .frame(maxWidth: geometry.size.width * 0.8, maxHeight: geometry.size.height * 0.02)
+                                //.frame(width: 300)
                         }
-                        .frame(width: 300)
+                        .frame(maxWidth: geometry.size.width * 0.8, maxHeight: geometry.size.height * 0.02)
+                        //.frame(width: 300)
                         .padding()
                         .foregroundColor(Color.white)
                         .background(Color.indigo)
                         .cornerRadius(10)
-                        .offset(y: 130)
+                        //.offset(y: geometry.size.height * 0.1)
+                        //.offset(y: 130)
                         .actionSheet(isPresented: $showSheet) {
                             ActionSheet(title: Text("Select Image"),
                                         message: Text("From one of the options"),
@@ -172,17 +189,19 @@ struct CameraView: View {
                             ])
                         }
                     }
-                    }
                 }
             }
+            .frame(maxWidth: geometry.size.width, maxHeight: geometry.size.height)
             .background(Color.PurpleBG)
         }
+        .navigationViewStyle(StackNavigationViewStyle())
         .sheet(isPresented: $showImagePicker) {
             ImagePicker(image: self.$image, isShown: self.$showImagePicker, sourceType: self.sourceType)
                 .ignoresSafeArea(.all, edges: .bottom)
                 .onDisappear {
                     self.performImageClassification(image: self.image)
                 }
+        }
         }
     }
 }
